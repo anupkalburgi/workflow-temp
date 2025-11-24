@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, Float, DateTime
+from sqlalchemy import Column, Integer, String, Boolean, Float, DateTime, ForeignKey
 from .database import Base
 from datetime import datetime
 
@@ -22,3 +22,26 @@ class Product(Base):
     category = Column(String)
     price = Column(Float)
     stock = Column(Integer)
+
+class Submission(Base):
+    __tablename__ = "submissions"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    submission_number = Column(String, unique=True, index=True)
+    customer_name = Column(String)
+    submission_date = Column(DateTime, default=datetime.utcnow)
+    status = Column(String)  # "pending", "approved", "rejected"
+    total_amount = Column(Float)
+
+class Claim(Base):
+    __tablename__ = "claims"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    claim_number = Column(String, unique=True, index=True)
+    submission_id = Column(Integer, ForeignKey("submissions.id"))
+    claim_date = Column(DateTime, default=datetime.utcnow)
+    claim_type = Column(String)  # "medical", "dental", "vision"
+    amount = Column(Float)
+    status = Column(String)  # "pending", "approved", "denied"
+    description = Column(String)
+
